@@ -49,6 +49,7 @@ impl<'w, 's> InputEvents<'w, 's> {
         self.ev_keyboard_input.iter().last();
         self.ev_window_focused.iter().last();
         self.ev_window_created.iter().last();
+        self.ev_touch.iter().last();
     }
 }
 
@@ -291,7 +292,7 @@ pub fn process_input_system(
                     bevy::input::touch::TouchPhase::Ended => egui::TouchPhase::End,
                     bevy::input::touch::TouchPhase::Cancelled => egui::TouchPhase::Cancel,
                 },
-                pos: egui::pos2(touch_position.0, touch_position.1),
+                pos: egui::pos2(touch_position.0, focused_window_height / scale_factor - touch_position.1),
                 force: match touch.force {
                     Some(bevy::input::touch::ForceTouch::Normalized(force)) => force as f32,
                     Some(bevy::input::touch::ForceTouch::Calibrated {

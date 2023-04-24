@@ -226,8 +226,6 @@ pub fn process_input_system(
         }
     }
    
-    let focused_window_height = context_params.focused_window.as_ref().map(|window_id|  context_params.contexts.get(*window_id).unwrap().window_size.height());
-
     if let Some(mut focused_input) = context_params
         .focused_window
         .as_ref()
@@ -279,8 +277,9 @@ pub fn process_input_system(
 
         for touch in input_events.ev_touch.iter() {
             let scale_factor = egui_settings.scale_factor as f32;
-            let mut touch_position: (f32, f32) = (touch.position / scale_factor).into();
-            touch_position.1 = focused_window_height.unwrap() / scale_factor - touch_position.1;
+            let touch_position: (f32, f32) = (touch.position / scale_factor).into();
+            // touch_position.1 = focused_window_height.unwrap() / scale_factor - touch_position.1;
+            // touch_position.1 = focused_window_height.unwrap() / scale_factor - ;
 
             // Emit touch event
             focused_input.events.push(egui::Event::Touch {
@@ -292,7 +291,7 @@ pub fn process_input_system(
                     bevy::input::touch::TouchPhase::Ended => egui::TouchPhase::End,
                     bevy::input::touch::TouchPhase::Cancelled => egui::TouchPhase::Cancel,
                 },
-                pos: egui::pos2(touch_position.0, focused_window_height / scale_factor - touch_position.1),
+                pos: egui::pos2(touch_position.0, touch_position.1),
                 force: match touch.force {
                     Some(bevy::input::touch::ForceTouch::Normalized(force)) => force as f32,
                     Some(bevy::input::touch::ForceTouch::Calibrated {
